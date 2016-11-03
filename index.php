@@ -12,7 +12,7 @@ foreach ($results as $key => $result) {
 }
 
 
-
+//
 
 function findFlights($departure_airport_id, $destination_airport_id) {
   $flight = new Flight();
