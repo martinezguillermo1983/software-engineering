@@ -1,67 +1,53 @@
-<?php 
+<?php
 
-require __DIR__ . '/vendor/autoload.php';
+date_default_timezone_set ( 'America/Vancouver' );
 
-$departure_airport_id = $_POST['departure_airport_id'];
-$destination_airport_id = $_POST['destination_airport_id'];
+//  Global variables
+$basename = __DIR__;
+$baseUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$baseUrl = removeUrlParameters($baseUrl);
+$db_host  = 'localhost';
+$db_database  = 'db1';
+$db_username  = 'root';
+$db_password  = '';
 
-$results = findFlights($departure_airport_id, $destination_airport_id);
-
-foreach ($results as $key => $result) {
-  print $result->airline_id . ' ' . $result->id . '<br>';
+//  Global functions
+function render($viewPath, $variables=[]) {
+  include_once($GLOBALS['basename'] . '/views/layout/application.html');  
 }
 
-
-//
-
-function findFlights($departure_airport_id, $destination_airport_id) {
-  $flight = new Flight();
-  $results = $flight->query->where('departure_airport_id','=',$departure_airport_id)->where('destination_airport_id','=',$destination_airport_id)->get();
-  return $results;
-}
-
-
-
-
-
-
-
-class Model {
-
-  public $table;
-  public $query;
-
-  function __construct() {
-    // $className = get_called_class();
-    $config = array(
-                'driver'    => 'mysql', // Db driver
-                'host'      => 'localhost',
-                'database'  => 'clientserver',
-                'username'  => 'root',
-                'password'  => '',
-                // 'charset'   => 'utf8', // Optional
-                // 'collation' => 'utf8_unicode_ci', // Optional
-                // // 'prefix'    => 'cb_', // Table prefix, optional
-                // 'options'   => array( // PDO constructor options, optional
-                //     PDO::ATTR_TIMEOUT => 5,
-                //     PDO::ATTR_EMULATE_PREPARES => false,
-                // ),
-            );
-
-    new \Pixie\Connection('mysql', $config, 'QB');
-    $this->query = QB::table($this->table);
+function getInputParameter($parameter) {
+  switch ($GLOBALS['method']) {
+    case 'GET':
+      return isset($_GET[$parameter]) ? $_GET[$parameter] : null;
+      break;
+    case 'POST':
+      return isset($_POST[$parameter]) ? $_POST[$parameter] : null;
+      break;
+    
+    default:
+      return null;
+      break;
   }
-
 }
 
-class Aircraft extends Model {
-
-  public $table = 'aircraft';
-
+function removeUrlParameters($url) {
+  $url = explode('?', $url);
+  return $url[0];
 }
 
-class Flight extends Model {
+//  Include all the models
+include_once($GLOBALS['basename'] . '/models.php');
 
-  public $table = 'flight';
+//  Get the request route
+$requestUri = $_SERVER['REQUEST_URI'];
+$requestUri = removeUrlParameters($requestUri);
+$requestUriParts = explode('/', $requestUri);
+array_shift($requestUriParts);
+array_shift($requestUriParts);
+print $route = implode('/', $requestUriParts);
+//  Get the request method
+$method = $_SERVER['REQUEST_METHOD'];
 
-}
+//  Handle routes
+include_once($GLOBALS['basename'] . '/routes.php');

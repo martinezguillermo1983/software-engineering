@@ -1,0 +1,103 @@
+<h1>Find a flight</h1>
+
+<hr>
+
+<div class="row">
+  <form method="GET" action="">
+    <div class="row">
+      <div class="form-group col-md-4">
+        <div class="flight-type-radios">
+          <ul>                                                                
+            <li>
+                 <input type="radio" id="round-trip" name="flight_type" value="round_trip" <?php if('round_trip' == $variables['flight_type'] || null == $variables['flight_type']){print 'checked=\"checked\"';} ?>>
+                 <label for="round-trip">Round trip</label>
+            </li>                                                  
+            <li>
+                 <input type="radio" id="one-way" name="flight_type" value="one_way" <?php if('one_way' == $variables['flight_type']){print 'checked=\"checked\"';} ?>>
+                 <label for="one-way">One way</label>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="form-group col-md-3">
+        <select name="seat_type" class="form-control">
+            <option value="economy" <?php if('economy' == $variables['seat_type']){print 'selected=\"selected\"';} ?>>Economy</option>
+            <option value="business" <?php if('business' == $variables['seat_type']){print 'selected=\"selected\"';} ?>>Business</option>
+        </select>
+      </div>
+      <div class="form-group col-md-1">
+        <select name="passengers_number" class="form-control">
+          <?php for ($i = 1; $i <= 10; $i++) { ?>
+            <option value="<?php print $i ?>" <?php if($i == $variables['passengers_number']){print 'selected=\"selected\"';} ?>><?php print $i ?></option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="form-group col-md-4">
+        <label>From</label>
+        <select name="departure_airport_id" class="form-control">
+          <?php foreach ($variables['airports'] as $id => $label) { ?>
+            <option value="<?php print $id ?>" <?php if($id == $variables['departure_airport_id']){print 'selected=\"selected\"';} ?>><?php print $label ?></option>
+          <?php } ?>
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <label>To</label>
+        <select name="destination_airport_id" class="form-control">
+          <?php foreach ($variables['airports'] as $id => $label) { ?>
+            <option value="<?php print $id ?>" <?php if($id == $variables['destination_airport_id']){print 'selected=\"selected\"';} ?>><?php print $label ?></option>
+          <?php } ?>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-4 inner-addon right-addon">
+        <i class="glyphicon glyphicon-calendar"></i>
+        <input type="text" name="departure_date" class="form-control form-datepicker" value="<?php print $variables['departure_date'] ?>">
+      </div>
+      <div class="form-group col-md-4 inner-addon right-addon" id="return-date" style="<?php if ($variables['flight_type'] == 'one_way') print 'display: none;'?>">
+        <i class="glyphicon glyphicon-calendar"></i>
+        <input type="text" name="return_date" class="form-control form-datepicker" value="<?php print $variables['return_date'] ?>">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="form-group col-md-4">
+        <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Find</button>
+      </div>
+    </div>
+  </form>
+</div>
+ 
+<?php if (isset($variables['results'])) { ?>
+  <div class="row search-results col-md-8">
+    <span class="search-results-stats"><?php print count($variables['results']) ?> result(s).</span>
+    <hr> 
+    <ul>
+    <?php foreach ($variables['results'] as $key => $flight) { ?>
+      <li>
+        <a href="<?php print $GLOBALS['baseUrl'] . 'flight/' . $flight->id . '?seat_type=' . $variables['seat_type'] . '&passengers_number=' . $variables['passengers_number'] . '&flight_type=' . $variables['flight_type'] ?>">
+          <div class="row">
+            <span class="col-md-4 flight-price">$<?php $variables['seat_type'] == 'economy' ? print $flight->price_economy * $variables['passengers_number'] :  print $flight->price_business * $variables['passengers_number'] ?></span>
+            <div class="col-md-6">
+              <span class="flight-time"><?php print date("h:i A", strtotime($flight->departure_time)) . ' - ' . date("h:i A", strtotime($flight->arrival_time)) ?></span><br>
+              <span class="flight-airline"><?php print $flight->airline->name ?> - <?php print $flight->id ?></span>
+            </div>
+            <?php
+              $durSecs = strtotime($flight->arrival_time) - strtotime($flight->departure_time);
+              $durHours = floor($durSecs / 3600);
+              $durHours = ($durHours > 0) ? $durHours : 24 + $durHours;
+              $durMins = floor($durSecs / 60 % 60);
+              $durMins = ($durMins > 0) ? $durMins : 60 + $durMins;
+            ?>
+            <span class="col-md-2 flight-duration"><?php print $durHours."h ".sprintf("%02d", $durMins)."m"; ?></span> 
+          </div>
+        </a>
+        <hr>      
+      </li>
+    <?php } ?>
+    </ul>
+  </div>
+<?php } ?>

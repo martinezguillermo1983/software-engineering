@@ -1,0 +1,19 @@
+############################################
+## default index file
+
+    DirectoryIndex index.php
+
+<IfModule mod_rewrite.c>
+
+############################################
+## enable rewrites
+
+    Options +FollowSymLinks
+    RewriteEngine on
+    RewriteRule ^(assets) - [L]
+############################################
+## rewrite everything else to index.php
+
+    RewriteRule .* index.php [L]
+
+</IfModule>
