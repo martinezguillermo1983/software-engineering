@@ -82,7 +82,8 @@ ul {
 }
 
 .search-results .flight-price {
-  font-size: 2em;
+  font-size: 2em;  
+  font-weight: bold;
 }
 
 .search-results .flight-time {
@@ -103,4 +104,47 @@ ul {
 
 .search-results a:hover {
   color: #2e6da4;
+}
+
+.flight-price {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.flight-time {
+  font-size: 1.5em;
+}
+.flight-airline {
+  font-size: 1em;
+  color: #bbb; 
+}
+.flight-date {
+  font-size: 1em;
+  font-style: italic;
+  color: #bbb; 
+}
+.flight-title {
+  font-size: 2em;
+}
+.flight-duration {
+  font-size: 1.5em;
+  text-align: right;
+}
+
+.flight-return, .flight-outbound {
+  margin-left: 0;
+  margin-right: 0;
+
+}
+.flight-return input[type="radio"] {
+    display:none;
+}
+
+.flight-return label {
+  font-weight: normal !important;
+  cursor: pointer; cursor: hand;
+}
+
+.flight-return input[type="radio"]:checked + label {
+    background-color: #d1ebf5;
 }

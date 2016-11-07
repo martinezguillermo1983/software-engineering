@@ -62,9 +62,11 @@
         <input type="text" name="return_date" class="form-control form-datepicker" value="<?php print $variables['return_date'] ?>">
       </div>
     </div>
-
     <div class="row">
       <div class="form-group col-md-4">
+        <?php if ($variables['error'] !== null) { ?>
+          <div class="alert alert-danger"><strong>Something is wrong. </strong><?php print $variables['error'] ?></div>
+        <?php } ?>
         <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Find</button>
       </div>
     </div>
@@ -78,7 +80,7 @@
     <ul>
     <?php foreach ($variables['results'] as $key => $flight) { ?>
       <li>
-        <a href="<?php print $GLOBALS['baseUrl'] . 'flight/' . $flight->id . '?seat_type=' . $variables['seat_type'] . '&passengers_number=' . $variables['passengers_number'] . '&flight_type=' . $variables['flight_type'] ?>">
+        <a href="<?php print $GLOBALS['baseUrl'] . 'flight?flight_id=' . $flight->id . '&seat_type=' . $variables['seat_type'] . '&passengers_number=' . $variables['passengers_number'] . '&flight_type=' . $variables['flight_type'] . '&departure_date=' . $variables['departure_date'] . '&return_date=' . $variables['return_date']?>">
           <div class="row">
             <span class="col-md-4 flight-price">$<?php $variables['seat_type'] == 'economy' ? print $flight->price_economy * $variables['passengers_number'] :  print $flight->price_business * $variables['passengers_number'] ?></span>
             <div class="col-md-6">

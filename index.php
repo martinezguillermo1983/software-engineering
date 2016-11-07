@@ -4,7 +4,8 @@ date_default_timezone_set ( 'America/Vancouver' );
 
 //  Global variables
 $basename = __DIR__;
-$baseUrl = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$folder = 'software-engineering';
+$baseUrl = 'http://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/';
 $baseUrl = removeUrlParameters($baseUrl);
 $db_host  = 'localhost';
 $db_database  = 'db1';
@@ -45,7 +46,7 @@ $requestUri = removeUrlParameters($requestUri);
 $requestUriParts = explode('/', $requestUri);
 array_shift($requestUriParts);
 array_shift($requestUriParts);
-print $route = implode('/', $requestUriParts);
+$route = implode('/', $requestUriParts);
 //  Get the request method
 $method = $_SERVER['REQUEST_METHOD'];
 

@@ -40,8 +40,11 @@ class Model extends \Pixie\QueryBuilder\QueryBuilderHandler {
   //  Override QueryBuilder first method to convert results to the called Class
   public function first() {
     $result = parent::first();
-    $className = get_called_class();
-    return static::cast($result, $className);
+    if( is_object($result) ) {
+      $className = get_called_class();
+      return static::cast($result, $className);      
+    }
+    return $result;
   }
 
   private function loadRelationships() {
@@ -117,22 +120,84 @@ class Flight extends Model {
       'relationshipType' => 'has_one',
       'foreignKey' => 'airline_id'
     ],
+    [
+      'relationshipName' => 'departure_airport',
+      'relationshipClass' => 'Airport',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'departure_airport_id'
+    ],
+    [
+      'relationshipName' => 'destination_airport',
+      'relationshipClass' => 'Airport',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'destination_airport_id'
+    ],
   ];
 
+  public function getCheapestReturnFlight($seat_type) {
+    $returnFlight = new Flight();
+    return $returnFlight
+      ->where('departure_airport_id', $this->destination_airport_id)
+      ->where('destination_airport_id', $this->departure_airport_id)
+      ->orderBy('price_'.$seat_type, 'asc')
+      ->first();
+  }
+
+  public function getReturnFlights($seat_type) {
+    $returnFlights = new Flight();
+    $results = $returnFlights
+      ->where('departure_airport_id', $this->destination_airport_id)
+      ->where('destination_airport_id', $this->departure_airport_id)
+      ->orderBy('price_'.$seat_type, 'asc')
+      ->get();
+  //  Add prices to current flight
+    foreach ($results as $key => $returnFlight) {
+      $results[$key]->price_economy += $this->price_economy;
+      $results[$key]->price_business += $this->price_business;      
+    }
+    return $results;
+  }
 }
 
 class Airport extends Model {
 
   public $table = 'airport';
+  public $relationships = [
+    [
+      'relationshipName' => 'address',
+      'relationshipClass' => 'Address',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'address_id'
+    ],
+  ];
 
   public static function getAirportsDropdown() {
     $airports = new self();
     $airports = $airports->get();
     $options = [];
     foreach ($airports as $key => $airport) {
-      $options[$airport->id] = "(".$airport->id.") " .$airport->name;
+      $options[$airport->id] = $airport->address->city->name . ' (' . $airport->id . ')';
     }
     return $options;
   }
+
+}
+
+class Address extends Model {
+
+  public $table = 'address';
+  public $relationships = [
+    [
+      'relationshipName' => 'city',
+      'relationshipClass' => 'City',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'city_id'
+    ],
+  ];
+}
+
+class City extends Model {
+
+  public $table = 'city';
 
 }

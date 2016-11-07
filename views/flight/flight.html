@@ -1,0 +1,82 @@
+<?php if (isset($variables['flight'])) { 
+        $flight = $variables['flight'];
+?>
+<form action="<?php print $GLOBALS['baseUrl'] . 'reservation'?>" method="GET">
+  <div class="row flight-outbound">
+    <div class="row">
+      <p>
+      <span class="flight-title">Outbound flight</span><br>
+      <span class="flight-date"><?php print date("D, M jS Y", strtotime($variables['departure_date']))?></span>
+      </p>
+    </div>
+    <div class="row col-md-8">
+      <?php if ($variables['flight_type'] == 'one_way') { ?>
+        <span class="col-md-4 flight-price">$<?php $variables['seat_type'] == 'economy' ? print $flight->price_economy * $variables['passengers_number'] :  print $flight->price_business * $variables['passengers_number'] ?></span>
+      <?php } ?>
+      <div class="col-md-6">
+        <span class="flight-time"><?php print date("h:i A", strtotime($flight->departure_time)) . ' - ' . date("h:i A", strtotime($flight->arrival_time)) ?></span><br>
+        <span class="flight-airline"><?php print $flight->departure_airport->address->city->name . ' (' . $flight->departure_airport->id . ')' ?> - <?php print $flight->destination_airport->address->city->name . ' (' . $flight->destination_airport->id . ')' ?></span><br>
+        <span class="flight-airline"><?php print $flight->airline->name ?> - <?php print $flight->id ?></span>
+      </div>
+      <?php
+        $durSecs = strtotime($flight->arrival_time) - strtotime($flight->departure_time);
+        $durHours = floor($durSecs / 3600);
+        $durHours = ($durHours > 0) ? $durHours : 24 + $durHours;
+        $durMins = floor($durSecs / 60 % 60);
+        $durMins = ($durMins > 0) ? $durMins : 60 + $durMins;
+      ?>
+      <span class="col-md-2 flight-duration"><?php print $durHours."h ".sprintf("%02d", $durMins)."m"; ?></span> 
+    </div>    
+  </div>
+  <br>
+  <hr>
+  <br>   
+  <?php if (isset($flight->return_flights)) { ?>
+    <div class="row flight-return">
+      <div class="row">
+        <p>
+        <span class="flight-title">Return flight</span><br>
+        <span class="flight-date"><?php print date("D, M jS Y", strtotime($variables['return_date']))?></span>
+        </p>
+      </div>
+      <ul>
+      <?php foreach ($flight->return_flights as $key => $flight) { ?>
+        <li>
+          <input type="radio" id="<?php print $flight->id ?>" value="<?php print $flight->id ?>" name="return_flight_id" <?php $key == 0 ? print 'checked="checked"':''; ?>>
+          <label for="<?php print $flight->id ?>" class="row col-md-8">
+            <div class="row">
+              <span class="col-md-4 flight-price">$<?php $variables['seat_type'] == 'economy' ? print $flight->price_economy * $variables['passengers_number'] :  print $flight->price_business * $variables['passengers_number'] ?></span>
+              <div class="col-md-6">
+                <span class="flight-time"><?php print date("h:i A", strtotime($flight->departure_time)) . ' - ' . date("h:i A", strtotime($flight->arrival_time)) ?></span><br>
+                <span class="flight-airline"><?php print $flight->departure_airport->address->city->name . ' (' . $flight->departure_airport->id . ')' ?> - <?php print $flight->destination_airport->address->city->name . ' (' . $flight->destination_airport->id . ')' ?></span><br>
+                <span class="flight-airline"><?php print $flight->airline->name ?> - <?php print $flight->id ?></span>
+              </div>
+              <?php
+                $durSecs = strtotime($flight->arrival_time) - strtotime($flight->departure_time);
+                $durHours = floor($durSecs / 3600);
+                $durHours = ($durHours > 0) ? $durHours : 24 + $durHours;
+                $durMins = floor($durSecs / 60 % 60);
+                $durMins = ($durMins > 0) ? $durMins : 60 + $durMins;
+              ?>
+              <span class="col-md-2 flight-duration"><?php print $durHours."h ".sprintf("%02d", $durMins)."m"; ?></span> 
+            </div> 
+          </label>                    
+        </li>
+      <?php } ?>
+      </ul>
+    </div>
+    <input type="hidden" name="return_date" value="<?php print $variables['return_date'] ?>">
+  <?php } ?>
+  <div class="row">
+    <div class="form-group col-md-4">
+      <button type="submit" class="btn btn-primary">Book flight</button>
+    </div>
+  </div>
+  <input type="hidden" name="passengers_number" value="<?php print $variables['passengers_number'] ?>">
+  <input type="hidden" name="seat_type" value="<?php print $variables['seat_type'] ?>">
+  <input type="hidden" name="seat_type" value="<?php print $variables['flight_type'] ?>">
+  <input type="hidden" name="departure_date" value="<?php print $variables['departure_date'] ?>">
+  <input type="hidden" name="seat_type" value="<?php print $variables['seat_type'] ?>">
+  <input type="hidden" name="flight_id" value="<?php print $flight->id ?>">
+</form>
+<?php } ?>
