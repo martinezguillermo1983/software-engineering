@@ -8,7 +8,7 @@ $folder = 'software-engineering';
 $baseUrl = 'http://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/';
 $baseUrl = removeUrlParameters($baseUrl);
 $db_host  = 'localhost';
-$db_database  = 'db1';
+$db_database  = 'flight_finder';
 $db_username  = 'root';
 $db_password  = '';
 
