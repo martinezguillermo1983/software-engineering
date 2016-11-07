@@ -1,16 +1,10 @@
 <?php
-
-date_default_timezone_set ( 'America/Vancouver' );
-
+include_once('config.php');  
+date_default_timezone_set ($timezone);
 //  Global variables
 $basename = __DIR__;
-$folder = 'software-engineering';
 $baseUrl = 'http://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/';
 $baseUrl = removeUrlParameters($baseUrl);
-$db_host  = 'localhost';
-$db_database  = 'flight_finder';
-$db_username  = 'root';
-$db_password  = '';
 
 //  Global functions
 function render($viewPath, $variables=[]) {
