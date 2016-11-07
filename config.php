@@ -1,6 +1,6 @@
 <?php
 //  Root folder
-$folder = 'software-engineering';
+$folder = 'software-engineering-master';
 
 //  DB credentials
 $db_host  = 'localhost';
