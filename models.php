@@ -199,5 +199,81 @@ class Address extends Model {
 class City extends Model {
 
   public $table = 'city';
+  public $relationships = [
+    [
+      'relationshipName' => 'province_state',
+      'relationshipClass' => 'ProvinceState',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'province_state_id'
+    ],
+  ];
+
+}
+
+class ProvinceState extends Model {
+
+  public $table = 'province_state';
+  public $relationships = [
+    [
+      'relationshipName' => 'country',
+      'relationshipClass' => 'Country',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'country_id'
+    ],
+  ];
+}
+
+class Country extends Model {
+
+  public $table = 'country';
+
+}
+
+class Customer extends Model {
+
+  public $table = 'customer';
+  public $relationships = [
+    [
+      'relationshipName' => 'address',
+      'relationshipClass' => 'Address',
+      'relationshipType' => 'has_one',
+      'foreignKey' => 'address_id'
+    ],
+  ];
+
+}
+
+class Reservation extends Model {
+
+  public $table = 'reservation';
+
+  public function getCustomers() {
+    $customer = new Customer();
+    return $customer
+      ->join('reservation_customer', 'reservation_customer.customer_id', '=', 'id')
+      ->where('reservation_customer.reservation_id', $this->id)
+      ->orderBy('reservation_customer.order', 'asc')
+      ->get();
+  }
+
+  public function getFlights() {
+    $flight = new Flight();
+    return $flight
+      ->join('reservation_flight', 'reservation_flight.flight_id', '=', 'id')
+      ->where('reservation_flight.reservation_id', $this->id)
+      ->orderBy('reservation_flight.order', 'asc')
+      ->get();
+  }
+}
+
+class ReservationCustomer extends Model {
+
+  public $table = 'reservation_customer';
+
+}
+
+class ReservationFlight extends Model {
+
+  public $table = 'reservation_flight';
 
 }

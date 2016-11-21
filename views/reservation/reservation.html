@@ -1,0 +1,139 @@
+<?php if (isset($variables['flight'])) { 
+        $flight = $variables['flight'];
+?>
+<?php if (isset($variables['error']) && $variables['error'] !== null) { ?>
+  <div class="alert alert-danger"><strong>Something is wrong. </strong><?php print $variables['error'] ?></div>
+<?php } ?>
+<form action="<?php print $GLOBALS['baseUrl'] . 'reservation'?>" method="POST">
+  <h2> Flight Reservation </h2>
+  <h4> Passenger 1 - Contact Information </h4>
+  <div class="reservation-passenger">
+    <div class="row flight-reservation">
+      <div class="col-md-6 form-group">
+        <label for="first_name">First Name</label>
+        <input class="form-control" id="first_name" name="customer[0][first_name]" type="text"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="last_name">Last Name</label>
+        <input class="form-control" id="last_name" name="customer[0][last_name]" type="text"/>
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="email">Email</label>
+        <input class="form-control" id="email" name="customer[0][email]" type="email"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="password">Password</label>
+        <input class="form-control" id="password" name="customer[0][password]" type="password"/>
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="address">Address</label>
+        <input class="form-control" id="address" name="customer[0][address]" type="text"/>
+      </div>
+      <div class="col-md-6 form-group search-city">
+        <label for="city-select">City (Province/State, Country)</label>
+        <select id="city-select" class="chosen-select" name="customer[0][city_id]" class="form-control" placeholder="Search a city..." style="width: 100%;">
+        </select>
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="postal_code">Postal Code</label>
+        <input class="form-control" id="postal_code" name="customer[0][postal_code]" type="text"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="phone">Phone Number</label>
+        <input class="form-control" id="phone" name="customer[0][phone]" type="text"/>
+      </div>
+      <span class="clearfix"/>         
+    </div>
+  </div>
+  <br>
+  <hr>
+  <br>
+  <?php for ($i = 2; $i <= $variables['passengers_number']; $i++) { ?>
+    <h4> Passenger <?php print $i ?> - Contact Information </h4>
+    <div class="reservation-passenger">
+      <div class="row flight-reservation">
+        <div class="col-md-6 form-group">
+          <label for="first_name">First Name</label>
+          <input class="form-control" id="first_name" name="customer[<?php print $i-1 ?>][first_name]" type="text"/>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="last_name">Last Name</label>
+          <input class="form-control" id="last_name" name="customer[<?php print $i-1 ?>][last_name]" type="text"/>
+        </div>
+        <span class="clearfix"/>         
+      </div>
+    </div>
+    <br>
+    <hr>
+    <br>    
+  <?php } ?>
+  <h3>Payment Information</h3>
+  <div class="reservation-payment">
+    <div class="row">
+      <div class="col-md-6 form-group">
+        <label for="card_number">Card Number</label>
+        <input class="form-control" id="card_number" name="card_number" type="text"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="month">Month</label>
+        <select class="form-control" id="month" name="month">
+          <option>01</option>
+          <option>02</option>
+          <option>03</option>
+          <option>04</option>
+          <option>05</option>
+          <option>06</option>
+          <option>07</option>
+          <option>08</option>
+          <option>09</option>
+          <option>10</option>
+          <option>11</option>
+          <option>11</option>
+        </select>
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="card_cvv">CVV</label>
+        <input class="form-control" id="card_cvv" name="card_cvv" type="text"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="year">Year</label>
+        <select class="form-control" id="year" name="year">
+          <option>2016</option>
+          <option>2017</option>
+          <option>2018</option>
+          <option>2019</option>
+          <option>2020</option>
+          <option>2021</option>
+          <option>2022</option>
+          <option>2023</option>
+          <option>2024</option>
+          <option>2025</option>
+        </select>
+      </div>
+      <span class="clearfix"/>           
+    </div>
+  </div>
+  <br>
+  <hr>
+  <br>     
+  <div class="row">
+    <div class="form-group col-md-4">
+      <button type="submit" class="btn btn-primary">Complete</button>
+    </div>
+  </div>
+  <input type="hidden" name="passengers_number" value="<?php print $variables['passengers_number'] ?>">
+  <input type="hidden" name="seat_type" value="<?php print $variables['seat_type'] ?>">
+  <input type="hidden" name="flight_type" value="<?php print $variables['flight_type'] ?>">
+  <input type="hidden" name="departure_date" value="<?php print $variables['departure_date'] ?>">
+  <input type="hidden" name="flight_id" value="<?php print $variables['flight']->id ?>">
+  <?php if (isset($variables['return_flight'])) { ?>
+    <input type="hidden" name="return_flight_id" value="<?php print $variables['return_flight']->id ?>">
+    <input type="hidden" name="return_date" value="<?php print $variables['return_date'] ?>">
+  <?php } ?>
+
+</form>
+<?php } ?>

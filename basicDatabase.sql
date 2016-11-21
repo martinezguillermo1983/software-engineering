@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.9)
 # Database: flight_finder
-# Generation Time: 2016-11-17 18:29:40 +0000
+# Generation Time: 2016-11-21 06:46:16 +0000
 # ************************************************************
 
 
@@ -26,7 +26,7 @@
 DROP TABLE IF EXISTS `address`;
 
 CREATE TABLE `address` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `address` varchar(255) DEFAULT NULL,
   `postal_code` varchar(10) DEFAULT NULL,
   `city_id` int(10) unsigned NOT NULL,
@@ -1039,7 +1039,26 @@ VALUES
 	(997,'7th','55346',12133),
 	(998,'Sachtjen','66396',17395),
 	(999,'Farragut','56930',3102),
-	(1000,'Anniversary','29362',21354);
+	(1000,'Anniversary','29362',21354),
+	(1009,'123 Fake','V5T2C4',20200),
+	(1010,'123 Fake','V5T2C4',20200),
+	(1011,'123 Fake','V5T2C4',20200),
+	(1012,'123 Fake','V5T2C4',20200),
+	(1013,'123 Fake','V5T2C4',20200),
+	(1014,'123 Fake St.','V5T2C4',2712),
+	(1015,'123 Fake St.','V5T2C4',2712),
+	(1016,'123 Fake St.','V5T2C4',2712),
+	(1017,'123 Fake St.','V5T2C4',2712),
+	(1018,'123 Fake St.','V5T2C4',20200),
+	(1019,'1533 East 8th Avenue','V5T2C4',2712),
+	(1020,'1533 East 8th Avenue','V5T2C4',2712),
+	(1021,'1533 East 8th Avenue','V5T2C4',2712),
+	(1022,'1533 East 8th Avenue','V5T2C4',20198),
+	(1023,'1533 East 8th Avenue','V5T2C4',20198),
+	(1024,'fagds','asdfg',20198),
+	(1025,'209 EAST 11TH AVENUE','V5T2C4',2712),
+	(1026,'123 Fake','V5T2C4',20199),
+	(1027,'123 Fake St.','V5T2C4',2712);
 
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1121,8 +1140,7 @@ CREATE TABLE `airport` (
   `name` varchar(80) DEFAULT NULL,
   `address_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `airport_city_foreign_idx` (`address_id`),
-  CONSTRAINT `airport_address_foreign` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`) ON DELETE CASCADE
+  KEY `airport_city_foreign_idx` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `airport` WRITE;
@@ -23018,16 +23036,15 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `customer`;
 
 CREATE TABLE `customer` (
-  `id` int(10) unsigned NOT NULL,
-  `first_name` varchar(15) DEFAULT NULL,
-  `last_name` varchar(15) DEFAULT NULL,
-  `address_id` int(10) unsigned DEFAULT NULL,
-  `email` varchar(10) DEFAULT NULL,
-  `phone` varchar(11) DEFAULT '',
-  `password` varchar(11) DEFAULT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `address_id` int(11) unsigned DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT '',
+  `password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `customer_address_foreign_idx` (`address_id`),
-  CONSTRAINT `customer_address_foreign` FOREIGN KEY (`address_id`) REFERENCES `address` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `customer_address_foreign_idx` (`address_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `customer` WRITE;
@@ -24034,7 +24051,7 @@ VALUES
 	(997,'Nicole','Rogers',269,NULL,NULL,NULL),
 	(998,'Norma','Kelly',685,NULL,NULL,NULL),
 	(999,'Kelly','Spencer',555,NULL,NULL,NULL),
-	(1000,'Rose','Nelson',914,NULL,NULL,NULL);
+	(1000,'Rose','Nelson',914,NULL,NULL,'');
 
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -25178,25 +25195,11 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `reservation`;
 
 CREATE TABLE `reservation` (
-  `reservation_id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `seat_type` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`reservation_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `reservation` WRITE;
-/*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
-
-INSERT INTO `reservation` (`reservation_id`, `seat_type`)
-VALUES
-	(1,'economy'),
-	(2,'business'),
-	(3,'economy'),
-	(4,'economy'),
-	(5,'business'),
-	(6,'economy');
-
-/*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table reservation_customer
@@ -25205,10 +25208,10 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `reservation_customer`;
 
 CREATE TABLE `reservation_customer` (
-  `reservation_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `customer_id` int(11) DEFAULT NULL,
+  `reservation_id` int(11) unsigned NOT NULL,
+  `customer_id` int(11) NOT NULL,
   `order` int(11) DEFAULT NULL,
-  PRIMARY KEY (`reservation_id`)
+  PRIMARY KEY (`reservation_id`,`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -25220,44 +25223,13 @@ DROP TABLE IF EXISTS `reservation_flight`;
 
 CREATE TABLE `reservation_flight` (
   `reservation_id` int(10) unsigned NOT NULL,
-  `flight_id` varchar(10) NOT NULL DEFAULT '',
+  `flight_id` varchar(255) NOT NULL DEFAULT '',
   `departure_date` date DEFAULT NULL,
   `order` int(2) DEFAULT NULL,
   PRIMARY KEY (`reservation_id`,`flight_id`),
-  KEY `reservationFlight_flight_foreign_idx` (`flight_id`),
-  CONSTRAINT `reservationFlight_reservation_foreign` FOREIGN KEY (`reservation_id`) REFERENCES `reservation` (`reservation_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `reservationFlight_flight_foreign_idx` (`flight_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-LOCK TABLES `reservation_flight` WRITE;
-/*!40000 ALTER TABLE `reservation_flight` DISABLE KEYS */;
-
-INSERT INTO `reservation_flight` (`reservation_id`, `flight_id`, `departure_date`, `order`)
-VALUES
-	(1,'1','2015-11-20',1),
-	(1,'2','2015-11-20',2),
-	(1,'3','2015-12-13',3),
-	(1,'4','2015-12-13',4),
-	(2,'5','2016-01-10',1),
-	(2,'6','2016-01-11',2),
-	(2,'7','2016-01-20',3),
-	(2,'8','2016-01-21',4),
-	(3,'10','2015-12-29',2),
-	(3,'9','2015-12-24',1),
-	(4,'11','2016-02-02',1),
-	(4,'12','2016-02-02',2),
-	(4,'13','2016-02-03',3),
-	(4,'14','2016-03-01',4),
-	(4,'15','2016-03-01',5),
-	(4,'16','2016-03-02',6),
-	(5,'5','2016-01-10',1),
-	(5,'6','2016-01-11',2),
-	(5,'7','2016-01-20',3),
-	(5,'8','2016-01-21',4),
-	(6,'17','2016-02-15',1),
-	(6,'18','2016-03-25',2);
-
-/*!40000 ALTER TABLE `reservation_flight` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 

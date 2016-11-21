@@ -12,8 +12,15 @@ function getRoot() {
   $departure_date = getInputParameter('departure_date');
   $return_date = getInputParameter('return_date');
   $passengers_number = getInputParameter('passengers_number');
+  $error = getInputParameter('error');
+  
   // Validate form
   $errors = null;
+  if ($error) {
+    if ($error == 'login') {
+      $errors[] = 'Email or password are invalid!';
+    }
+  }
   if ($departure_date !== null && empty($departure_date))
     $errors[] = 'Please select a departure date';
   if ($flight_type == 'round_trip') {

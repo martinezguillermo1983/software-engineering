@@ -1,0 +1,59 @@
+<?php $customer = $_SESSION['customer'] ?>  
+<?php if (isset($variables['error']) && $variables['error'] !== null) { ?>
+  <div class="alert alert-danger"><strong>Something is wrong. </strong><?php print $variables['error'] ?></div>
+<?php } ?>
+<form action="<?php print $GLOBALS['baseUrl'] . 'my-account'?>" method="POST">
+  <h2> My Account </h2>
+  <h4> Contact Information </h4>
+  <div class="reservation-passenger">
+    <div class="row flight-reservation">
+      <div class="col-md-6 form-group">
+        <label for="first_name">First Name</label>
+        <input class="form-control" id="first_name" name="customer[first_name]" type="text" value="<?php print $customer->first_name ?>"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="last_name">Last Name</label>
+        <input class="form-control" id="last_name" name="customer[last_name]" type="text" value="<?php print $customer->last_name ?>"/ />
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="email">Email</label>
+        <input class="form-control" id="email" name="customer[email]" type="email" value="<?php print $customer->email ?>"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="password">Password</label>
+        <input class="form-control" id="password" name="customer[password]" type="password"/>
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="address">Address</label>
+        <input class="form-control" id="address" name="customer[address]" type="text" value="<?php print $customer->address->address ?>"/>
+      </div>
+      <div class="col-md-6 form-group search-city">
+        <label for="city-select">City (Province/State, Country)</label>
+        <select id="city-select" class="chosen-select" name="customer[city_id]" class="form-control" placeholder="Search a city..." style="width: 100%;">
+          <option value="<?php print $customer->address->city_id ?>" selected><?php print $customer->address->city->name?> (<?php print $customer->address->city->province_state->name?>, <?php print $customer->address->city->province_state->country->name?>)</option>
+        </select>
+      </div>
+      <span class="clearfix"/>
+      <div class="col-md-6 form-group">
+        <label for="postal_code">Postal Code</label>
+        <input class="form-control" id="postal_code" name="customer[postal_code]" type="text" value="<?php print $customer->address->postal_code ?>"/>
+      </div>
+      <div class="col-md-6 form-group">
+        <label for="phone">Phone Number</label>
+        <input class="form-control" id="phone" name="customer[phone]" type="text" value="<?php print $customer->phone ?>"/>
+      </div>
+      <span class="clearfix"/>         
+    </div>
+  </div>
+  <br>
+  <hr>
+  <br>
+
+  <div class="row">
+    <div class="form-group col-md-4">
+      <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+  </div>
+</form>
