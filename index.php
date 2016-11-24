@@ -3,7 +3,7 @@ include_once('config.php');
 date_default_timezone_set ($timezone);
 //  Global variables
 $basename = __DIR__;
-$baseUrl = 'http://'.$_SERVER['HTTP_HOST'].'/'.$folder.'/';
+$baseUrl = 'http://'.$_SERVER['HTTP_HOST'].'/'.$folder;
 $baseUrl = removeUrlParameters($baseUrl);
 
 //  Global functions
@@ -39,7 +39,9 @@ $requestUri = $_SERVER['REQUEST_URI'];
 $requestUri = removeUrlParameters($requestUri);
 $requestUriParts = explode('/', $requestUri);
 array_shift($requestUriParts);
-array_shift($requestUriParts);
+if (!empty($folder)) {
+  array_shift($requestUriParts);  
+} 
 $route = implode('/', $requestUriParts);
 //  Get the request method
 $method = $_SERVER['REQUEST_METHOD'];

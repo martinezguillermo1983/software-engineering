@@ -2,6 +2,18 @@
 
 function getMyAccount($error=null) {
   $variables = [];
+  session_start();
+  $customer = $_SESSION['customer'];
+  // get reservations and flights
+  $reservations = new Reservation();
+  $reservations = $reservations
+                    ->join('reservation_customer', 'reservation_customer.reservation_id', '=', 'reservation.id')
+                    ->where('reservation_customer.customer_id', $customer->id)
+                    ->get();
+  foreach ($reservations as $key => $reservation) {
+    $reservations[$key]->flights = $reservation->getFlights();
+  }
+  $variables['reservations'] = $reservations;
   //  Render view
   render("my-account/my-account.html", $variables);
 }

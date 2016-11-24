@@ -47,16 +47,16 @@ function postReservation() {
   $departure_date = getInputParameter('departure_date');
   $customers = getInputParameter('customer');
 
-
   // Validate form
   $errors = null;
-  // Unique email
-  $customer = new Customer();
-  $customer = $customer->where('email', $customers[0]['email'])->first();
-  if ($customer) {
-    $errors[] = 'A customer with that email address already exists';
+  if (empty($customers[0]['id'])) {
+    // Unique email
+    $customer = new Customer();
+    $customer = $customer->where('email', $customers[0]['email'])->first();
+    if ($customer) {
+      $errors[] = 'A customer with that email address already exists';
+    }
   }
-
   if (!empty($errors)) {
     //  Render view
     return getReservation($errors[0]);
@@ -71,23 +71,44 @@ function postReservation() {
   // Save customers
   foreach ($customers as $key => $customerInput) {
     if ($key == 0) {
-      // Save main Customer
-      $address = new Address();
-      $addressId = $address->insert([
-        'address' => $customerInput['address'],
-        'postal_code' => $customerInput['postal_code'],
-        'city_id' => $customerInput['city_id']
-      ]);
-      $customer = new Customer();
-      $pass = password_hash($customerInput['password'], PASSWORD_DEFAULT);
-      $customerId = $customer->insert([
-        'first_name' => $customerInput['first_name'],
-        'last_name' => $customerInput['last_name'],
-        'email' => $customerInput['email'],
-        'address_id' => $addressId,
-        'phone' => $customerInput['phone'],
-        'password' => $pass
-      ]);      
+    // Save main Customer
+      if (empty($customerInput['id'])) {
+      // New customer
+        $address = new Address();
+        $addressId = $address->insert([
+          'address' => $customerInput['address'],
+          'postal_code' => $customerInput['postal_code'],
+          'city_id' => $customerInput['city_id']
+        ]);
+        $customer = new Customer();
+        $pass = password_hash($customerInput['password'], PASSWORD_DEFAULT);
+        $customerId = $customer->insert([
+          'first_name' => $customerInput['first_name'],
+          'last_name' => $customerInput['last_name'],
+          'email' => $customerInput['email'],
+          'address_id' => $addressId,
+          'phone' => $customerInput['phone'],
+          'password' => $pass
+        ]);
+      } else {
+      // Existing customer
+        $address = new Address();
+        $address->where('id',$customerInput['address_id'])->update([
+          'address' => $customerInput['address'],
+          'postal_code' => $customerInput['postal_code'],
+          'city_id' => $customerInput['city_id']
+        ]);
+        $addressId = $customerInput['address_id'];
+        $customer = new Customer();
+        $customer->where('id',$customerInput['id'])->update([
+          'first_name' => $customerInput['first_name'],
+          'last_name' => $customerInput['last_name'],
+          'email' => $customerInput['email'],
+          'address_id' => $customerInput['address_id'],
+          'phone' => $customerInput['phone'],
+        ]);
+        $customerId = $customerInput['id'];        
+      }      
     } else {
       // Save secondary Customers
       $customer = new Customer();

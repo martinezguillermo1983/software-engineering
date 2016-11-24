@@ -48,12 +48,44 @@
     </div>
   </div>
   <br>
-  <hr>
-  <br>
-
   <div class="row">
     <div class="form-group col-md-4">
       <button type="submit" class="btn btn-primary">Update</button>
     </div>
+  </div>
+  <br>
+  <hr>
+  <br>
+
+  <div class="row my-account-flights col-md-12">
+    <h2> My Flights </h2>
+    <hr> 
+    <ul>
+    <?php foreach ($variables['reservations'] as $key => $reservation) { ?>
+      <?php 
+        $flight = $reservation->flights[0];
+        $flight_type = count($reservation->flights) == 1 ? 'one_way' : 'round_trip';
+      ?>
+          <li>
+            <div class="row">
+              <div class="col-md-6">
+                <span class="flight-time"><?php print $flight->departure_airport->address->city->name . ' (' . $flight->departure_airport->id . ')' ?> - <?php print $flight->destination_airport->address->city->name . ' (' . $flight->destination_airport->id . ')' ?></span><br>
+                <span class="flight-airline"><?php print date("h:i A", strtotime($flight->departure_time)) . ' - ' . date("h:i A", strtotime($flight->arrival_time)) ?></span><br>
+                <span class="flight-airline"><?php print $flight->airline->name ?> - <?php print $flight->id ?></span>
+              </div>
+              <?php
+                $durSecs = strtotime($flight->arrival_time) - strtotime($flight->departure_time);
+                $durHours = floor($durSecs / 3600);
+                $durHours = ($durHours > 0) ? $durHours : 24 + $durHours;
+                $durMins = floor($durSecs / 60 % 60);
+                $durMins = ($durMins > 0) ? $durMins : 60 + $durMins;
+              ?>
+              <span class="col-md-2 flight-duration"><?php print $durHours."h ".sprintf("%02d", $durMins)."m"; ?></span> 
+              <span class="col-md-4 flight-duration"><?php print date("D, M jS Y", strtotime($flight->departure_date))?></span>
+            </div>
+            <hr> 
+          </li>
+    <?php } ?>
+    </ul>
   </div>
 </form>

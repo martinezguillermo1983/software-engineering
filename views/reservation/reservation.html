@@ -1,3 +1,4 @@
+<?php $customer = isset($_SESSION['customer']) ? $_SESSION['customer'] : false; ?>  
 <?php if (isset($variables['flight'])) { 
         $flight = $variables['flight'];
 ?>
@@ -9,41 +10,46 @@
   <h4> Passenger 1 - Contact Information </h4>
   <div class="reservation-passenger">
     <div class="row flight-reservation">
+      <input type="hidden" name="customer[0][id]" value="<?php $customer ? print $customer->id : print '' ?>">
+      <input type="hidden" name="customer[0][address_id]" value="<?php $customer ? print $customer->address_id : print '' ?>">
       <div class="col-md-6 form-group">
         <label for="first_name">First Name</label>
-        <input class="form-control" id="first_name" name="customer[0][first_name]" type="text"/>
+        <input class="form-control" id="first_name" name="customer[0][first_name]" type="text" value="<?php $customer ? print $customer->first_name : print '' ?>"/>
       </div>
       <div class="col-md-6 form-group">
         <label for="last_name">Last Name</label>
-        <input class="form-control" id="last_name" name="customer[0][last_name]" type="text"/>
+        <input class="form-control" id="last_name" name="customer[0][last_name]" type="text" value="<?php $customer ? print $customer->last_name : print '' ?>"/>
       </div>
       <span class="clearfix"/>
       <div class="col-md-6 form-group">
         <label for="email">Email</label>
-        <input class="form-control" id="email" name="customer[0][email]" type="email"/>
+        <input class="form-control" id="email" name="customer[0][email]" type="email" value="<?php $customer ? print $customer->email : print '' ?>"/>
       </div>
-      <div class="col-md-6 form-group">
-        <label for="password">Password</label>
-        <input class="form-control" id="password" name="customer[0][password]" type="password"/>
-      </div>
+      <?php if (!$customer) { ?>
+        <div class="col-md-6 form-group">
+          <label for="password">Password</label>
+          <input class="form-control" id="password" name="customer[0][password]" type="password"/>
+        </div>
+      <?php } ?>
       <span class="clearfix"/>
       <div class="col-md-6 form-group">
         <label for="address">Address</label>
-        <input class="form-control" id="address" name="customer[0][address]" type="text"/>
+        <input class="form-control" id="address" name="customer[0][address]" type="text" value="<?php $customer ? print $customer->address->address : print '' ?>"/>
       </div>
       <div class="col-md-6 form-group search-city">
         <label for="city-select">City (Province/State, Country)</label>
         <select id="city-select" class="chosen-select" name="customer[0][city_id]" class="form-control" placeholder="Search a city..." style="width: 100%;">
+          <option value="<?php $customer ? print $customer->address->city_id : print '' ?>" selected><?php $customer ? print $customer->address->city->name.' ('.$customer->address->city->province_state->name.', '.$customer->address->city->province_state->country->name.')' : print '';?></option>
         </select>
       </div>
       <span class="clearfix"/>
       <div class="col-md-6 form-group">
         <label for="postal_code">Postal Code</label>
-        <input class="form-control" id="postal_code" name="customer[0][postal_code]" type="text"/>
+        <input class="form-control" id="postal_code" name="customer[0][postal_code]" type="text" value="<?php $customer ? print $customer->address->postal_code : print '' ?>"/>
       </div>
       <div class="col-md-6 form-group">
         <label for="phone">Phone Number</label>
-        <input class="form-control" id="phone" name="customer[0][phone]" type="text"/>
+        <input class="form-control" id="phone" name="customer[0][phone]" type="text" value="<?php $customer ? print $customer->phone : print '' ?>"/>
       </div>
       <span class="clearfix"/>         
     </div>
