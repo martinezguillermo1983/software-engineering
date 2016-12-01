@@ -2,6 +2,8 @@
 
 SETUP INSTRUCTIONS
 
+This webapp runs over a WAMP, LAMP or MAMP configuration. Make sure your Apache REWRITE module is enabled and follow these 4 steps:
+
 1- Uncompress the zip file and copy the folder 'software-engineering-master' into your 'www' folder (or whatever is the folder your 'localhost' points to).
 
 2- Besides the PHP code, you'll also need to setup the MySQL database. Create a new database called 'flight_finder' and import the file basicDatabase.sql in it.
